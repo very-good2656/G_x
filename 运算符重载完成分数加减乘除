@@ -1,0 +1,99 @@
+#include<iostream>
+using namespace std;
+
+void simplify(int& a, int& b);
+
+class fenshu {
+	int son, mom;
+public:
+//	void simplify(int& son, int& mom);//化简分数
+	fenshu(int a=1,int b=1) {	//	分母不能为0
+		son = a; mom = b;
+		simplify(son,mom);
+	}
+
+	void show() { cout << "son:" << son << endl << "mom=" << mom << endl;; }
+
+	fenshu& operator =(const fenshu& f);//成员函数的+只能有一个变量：（主函数：fenshu f1(1,2),f;f = f1;）编译器处理为f.operator=f1
+								//VS和Dev编译都需要在形参里设置为(const fenshu& ) 
+	fenshu operator +(fenshu& f);
+	fenshu operator -(fenshu& f);
+	friend fenshu operator *(fenshu &f1,fenshu &f2);
+	friend fenshu operator /(fenshu &f1,fenshu &f2);
+
+};
+
+fenshu operator*( fenshu &f1,fenshu &f2)
+{
+	fenshu f3;
+	f3.son = f1.son * f2.son;
+	f3.mom = f1.mom * f2.mom;
+	simplify(f3.son, f3.mom);
+	return f3;
+
+//	return fenshu(f1.son * f2.son, f1.mom * f2.mom);
+	}
+
+fenshu operator/(fenshu &f1,fenshu &f2) {
+	fenshu f3;
+	f3.son = f1.son * f2.mom;
+	f3.mom = f1.mom * f2.son;
+	simplify(f3.son, f3.mom);
+	return f3;
+}
+
+fenshu& fenshu::operator=(const fenshu &f) {//??????????????????????????????????????????
+	son = f.son;
+	mom = f.mom;
+	return *this;
+}
+
+fenshu fenshu::operator+(fenshu& f) {
+	fenshu f3;
+	f3.son = f.mom*son+f.son*mom;
+	f3.mom = mom*f.mom;
+	simplify(f3.son, f3.mom);
+	return f3;
+}
+
+fenshu fenshu::operator-(fenshu& f) {
+	fenshu f3;
+	f3.son = f.mom * son - f.son * mom;
+	f3.mom = mom * f.mom;
+	simplify(f3.son, f3.mom);
+	return f3;
+}
+
+void simplify(int& ta, int& tb) {//约分（求最大公约数） 
+		int a = ta;
+		int b = tb;
+		int c = b;
+		while(a%b!=0)
+		{
+			c = a%b;
+			a = b;
+			b = c;
+		} 
+		ta = ta/c;
+		tb = tb/c;
+}
+
+int main()
+{
+	fenshu f1(5,100),f2(4,5),f3,f4;
+	f4 = f1 + f2;
+	f4.show();
+	
+	cout<<'\n'<<"+:";
+	(f1 + f2).show();
+	
+	cout<<'\n'<<"-:";
+	(f1-f2).show();
+	
+	cout<<'\n'<<"*:";
+	(f1*f2).show();
+	
+	cout<<'\n'<<"/:";
+	(f1/f2).show(); 
+	return 0;
+}
