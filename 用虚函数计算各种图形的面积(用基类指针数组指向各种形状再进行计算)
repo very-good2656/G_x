@@ -1,0 +1,105 @@
+#include<iostream>
+#include<iomanip>
+#define PI 3.14159f
+
+using namespace std;
+
+class line {
+protected:
+	float len;
+public:
+	line(float l = 0) {
+		len = l;
+	}
+	virtual float compute()
+	{
+		return 0.0;
+	}
+};
+
+class Circle :public line
+{
+public:
+	Circle(float length) :line(length) {
+	}
+	float compute()
+	{
+		return  PI * len * len;
+	}
+};
+
+class Square :public line
+{
+public:
+	Square(float lll = 0) :line(lll) {
+	}
+	float compute()
+	{
+		return len * len;
+	}
+};
+
+class Rectangle :public line
+{
+	float wide;//宽 
+public:
+	Rectangle(float w = 0,float lll = 0):line(lll) {
+		 wide = w;
+	}
+	float compute()
+	{
+		return len*wide;
+	}
+};
+
+class Trapezoid :public line//梯形
+{
+	float down,up;//上底和下底，基类的len为高 
+public:
+	Trapezoid(float d = 0, float u = 0, float h = 0) :line(h) {
+		down = d;
+		up = u;
+	}
+	float compute()
+	{
+		return 0.5*(down + up)*len;
+	}
+};
+
+class Triangle :public line//三角形
+{
+	float bottom;//上底和下底，基类的len为高 
+public:
+	Triangle(float bo, float h = 0) :line(h) {
+		bottom = bo;
+	}
+	float compute()
+	{
+		return 0.5 * bottom * len;
+	}
+};
+
+
+int main()
+{
+	float sum = 0;
+	float all_l[9];
+	int i = 0;
+	line *l[5];//基类指针数组
+	while (i < 9)
+	{
+		cin >> all_l[i];
+		i++;
+	}
+	l[0] = new Circle(all_l[0]);
+	l[1] = new Square(all_l[1]);
+	l[2] = new Rectangle(all_l[2], all_l[3]);
+	l[3] = new Trapezoid(all_l[4], all_l[5], all_l[6]);
+	l[4] = new Triangle(all_l[7], all_l[8]);
+	for (int j = 0; j < 5; j++)
+	{
+		sum += l[j]->compute();
+	}
+	cout << fixed << setprecision(3) << sum;
+	return 0;
+}
