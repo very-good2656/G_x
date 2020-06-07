@@ -1,0 +1,99 @@
+/*用队列思想实现书的层序输出*/
+#include<iostream>
+#include<queue>
+#include <cstddef>
+using namespace std;
+
+typedef struct TNode
+{
+	int data;
+	struct TNode* right;
+	struct TNode* left;
+}TNode, * BiTree;
+
+//递归算法得到层序遍历
+int k=0;
+void cengxv(BiTree& Tree,int da[])
+{
+	queue<TNode> q;
+	TNode TempNode;
+	q.push(*Tree);//根入队 
+	
+	while (!q.empty())
+	{
+		TempNode = q.front();
+	
+		da[k] = TempNode.data;
+		k++;
+
+		q.pop(); // 根出队
+		if (TempNode.left)
+			q.push(*TempNode.left);		//根的左子树入队
+		if (TempNode.right)
+			q.push(*TempNode.right);//根左子树入队
+	}
+}
+
+//非递归算法得到层序遍历
+//void cengxv(BiTree BT){
+//	queue<BiTree> q;
+//	q.push(BT);
+//	int a[50];
+//	int k = 0;
+//	while(!q.empty()){
+//		BiTree p = q.front();
+//		a[k++] = p->data;
+//		q.pop();
+//		if(p->left){
+//			q.push(p->left);
+//		} 
+//		if(p->right){
+//			q.push(p->right);
+//		}
+//	}
+//}
+
+BiTree creatTree(int* post, int* in, int n) {
+	if (n <= 0) {
+		return NULL;
+	}
+	else {
+
+		BiTree T = new TNode;
+		T->data = post[n - 1];
+		int i,temp = post[n-1];
+
+		for (i = 0; i < n; i++)
+			if (temp == in[i])
+				break;
+				
+		T->left = creatTree(post, in, i);
+		T->right = creatTree(post + i, in + i + 1, n - i - 1);
+		return T;
+	}
+}
+
+void input(int *A, int n)
+{
+	for (int i = 0; i < n; i++)
+		cin >> A[i];
+}
+int main()
+{
+	int num,A[100],B[100],a[100];
+	cin >> num;
+
+	input(A, num);
+	input(B, num);
+	
+	BiTree Tree=NULL;
+
+	Tree = creatTree(A,B,num);
+
+	cengxv(Tree,a);
+		cout<<a[0];
+	for(int i=1;i<k;i++)
+		cout<<" "<<a[i];
+
+	return 0;
+}
